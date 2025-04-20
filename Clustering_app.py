@@ -5,46 +5,43 @@ from sklearn.datasets import load_iris
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 
-# Page setup
+# Page config
 st.set_page_config(page_title="K-Means Clustering App", layout="wide")
 st.title("🔍 K-Means Clustering App with Iris Dataset")
 
-# Sidebar - choose k
-st.sidebar.header("Configure Clustering")
+# Sidebar for cluster selection
+st.sidebar.header("Clustering Options")
 n_clusters = st.sidebar.slider("Select number of clusters (k)", 2, 10, value=3)
 
-# Load Iris dataset
+# Load dataset
 iris = load_iris()
 X = iris.data
 
-# KMeans clustering
+# Fit model
 kmeans = KMeans(n_clusters=n_clusters, random_state=42)
-y_kmeans = kmeans.fit_predict(X)
+clusters = kmeans.fit_predict(X)
 
-# PCA for dimensionality reduction
+# PCA for 2D visualization
 pca = PCA(n_components=2)
 X_pca = pca.fit_transform(X)
+centroids_pca = pca.transform(kmeans.cluster_centers_)
 
-# Define fixed color palette
-colors = ['red', 'blue', 'green', 'orange', 'purple', 'cyan', 'pink', 'brown', 'gray', 'olive']
+# Define custom color palette
+color_palette = ['red', 'blue', 'green', 'orange', 'purple', 'cyan', 'pink', 'brown', 'gray', 'olive']
+cluster_colors = [color_palette[label] for label in clusters]
 
-# Plot
+# Plotting
 fig, ax = plt.subplots()
-for i in range(n_clusters):
-    ax.scatter(
-        X_pca[y_kmeans == i, 0],
-        X_pca[y_kmeans == i, 1],
-        s=50,
-        c=colors[i],
-        label=f'Cluster {i}'
-    )
-
-# Plot cluster centers
-centers_pca = pca.transform(kmeans.cluster_centers_)
-ax.scatter(centers_pca[:, 0], centers_pca[:, 1], c='black', s=200, alpha=0.6, marker='X', label='Centroids')
-
-ax.set_title("Clusters (2D PCA Projection)")
+scatter = ax.scatter(X_pca[:, 0], X_pca[:, 1], c=cluster_colors, s=50)
+ax.scatter(centroids_pca[:, 0], centroids_pca[:, 1], c='black', s=200, marker='X', label='Centroids')
+ax.set_title("Clusters (PCA Visualization)")
 ax.set_xlabel("PCA1")
 ax.set_ylabel("PCA2")
+
+# Legend manually
+for i in range(n_clusters):
+    ax.scatter([], [], c=color_palette[i], label=f"Cluster {i}")
 ax.legend()
+
+# Show plot
 st.pyplot(fig)
