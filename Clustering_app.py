@@ -7,7 +7,7 @@ from sklearn.decomposition import PCA
 
 # Page config
 st.set_page_config(page_title="K-Means Clustering App", layout="wide")
-st.title("🔍 K-Means Clustering App with Iris Dataset")
+st.title("🔍 K-Means Clustering App with Iris Dataset by Tanananya Thongkum")
 
 # Sidebar for cluster selection
 st.sidebar.header("Clustering Options")
