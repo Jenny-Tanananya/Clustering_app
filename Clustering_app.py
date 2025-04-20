@@ -32,7 +32,6 @@ cluster_colors = [color_palette[label] for label in clusters]
 # Plotting
 fig, ax = plt.subplots()
 scatter = ax.scatter(X_pca[:, 0], X_pca[:, 1], c=cluster_colors, s=50)
-ax.scatter(centroids_pca[:, 0], centroids_pca[:, 1], c='black', s=200, marker='X', label='Centroids')
 ax.set_title("Clusters (PCA Visualization)")
 ax.set_xlabel("PCA1")
 ax.set_ylabel("PCA2")
