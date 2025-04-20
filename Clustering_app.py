@@ -24,7 +24,6 @@ clusters = kmeans.fit_predict(X)
 # PCA for 2D visualization
 pca = PCA(n_components=2)
 X_pca = pca.fit_transform(X)
-centroids_pca = pca.transform(kmeans.cluster_centers_)
 
 # Define custom color palette
 color_palette = ['red', 'blue', 'green', 'orange', 'purple', 'cyan', 'pink', 'brown', 'gray', 'olive']
