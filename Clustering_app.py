@@ -5,40 +5,46 @@ from sklearn.datasets import load_iris
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 
-# Set page config
+# Page setup
 st.set_page_config(page_title="K-Means Clustering App", layout="wide")
+st.title("🔍 K-Means Clustering App with Iris Dataset")
 
-# Title
-st.title("🔍 K-Means Clustering App with Iris Dataset by Tanananya Thongkum")
-
-# Sidebar
+# Sidebar - choose k
 st.sidebar.header("Configure Clustering")
 n_clusters = st.sidebar.slider("Select number of clusters (k)", 2, 10, value=3)
 
 # Load Iris dataset
 iris = load_iris()
 X = iris.data
-df = pd.DataFrame(X, columns=iris.feature_names)
 
-# Apply KMeans
+# KMeans clustering
 kmeans = KMeans(n_clusters=n_clusters, random_state=42)
-clusters = kmeans.fit_predict(X)
+y_kmeans = kmeans.fit_predict(X)
 
-# PCA for 2D projection
+# PCA for dimensionality reduction
 pca = PCA(n_components=2)
 X_pca = pca.fit_transform(X)
 
-# Plotting
+# Define fixed color palette
+colors = ['red', 'blue', 'green', 'orange', 'purple', 'cyan', 'pink', 'brown', 'gray', 'olive']
+
+# Plot
 fig, ax = plt.subplots()
-scatter = ax.scatter(X_pca[:, 0], X_pca[:, 1], c=clusters, cmap='rainbow', s=50)
+for i in range(n_clusters):
+    ax.scatter(
+        X_pca[y_kmeans == i, 0],
+        X_pca[y_kmeans == i, 1],
+        s=50,
+        c=colors[i],
+        label=f'Cluster {i}'
+    )
+
+# Plot cluster centers
+centers_pca = pca.transform(kmeans.cluster_centers_)
+ax.scatter(centers_pca[:, 0], centers_pca[:, 1], c='black', s=200, alpha=0.6, marker='X', label='Centroids')
+
 ax.set_title("Clusters (2D PCA Projection)")
 ax.set_xlabel("PCA1")
 ax.set_ylabel("PCA2")
-
-# Add legend
-for i in range(n_clusters):
-    ax.scatter([], [], c=scatter.cmap(i / n_clusters), label=f'Cluster {i}')
 ax.legend()
-
-# Display plot
 st.pyplot(fig)
